@@ -12,7 +12,7 @@ module.exports = {
     },
     devtool: 'eval',
     devServer: {
-        contentBase: __dirname + "/public",
+        contentBase: __dirname + "/dist",
         port: 8081,
         inline: true,
         hot: true,
