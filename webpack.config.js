@@ -10,7 +10,7 @@ module.exports = {
         path: __dirname + "/dist",
         filename: "bundle-[hash].js",
     },
-    devtool: 'eval',
+    devtool: 'eval',  // Remove this for production builds
     devServer: {
         contentBase: __dirname + "/dist",
         port: 8081,
