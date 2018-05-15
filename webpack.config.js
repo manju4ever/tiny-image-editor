@@ -2,7 +2,7 @@ let HtmlWebpackPlugin = require('html-webpack-plugin');
 let WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 
 module.exports = {
-    
+
     mode: 'none', //Defaults to production - Remove this for production builds
 
     entry: __dirname + "/src/index.js",
@@ -20,13 +20,13 @@ module.exports = {
     },
     module: {
         rules: [
-            { 
-                test: /\.jsx?$/, 
-                use: 'babel-loader', 
-                exclude: ["/node_modules/"] 
+            {
+                test: /\.jsx?$/,
+                use: 'babel-loader',
+                exclude: ["/node_modules/"]
             },
-            { 
-                test: /\.css?$/, 
+            {
+                test: /\.css?$/,
                 use: [
                     'style-loader', //Ability for webpack to bundle css files
                     {
@@ -39,9 +39,17 @@ module.exports = {
                     'postcss-loader', //Use Future CSS today - picks configuration from postcss.config.js
                 ],
             },
+            {
+                test: /\.scss?/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader',
+                ],
+            }
         ]
     },
-    plugins:[
+    plugins: [
         new WebpackCleanupPlugin(), //Cleanup old files in output.path and create new files everytime
         new HtmlWebpackPlugin({
             title: 'Next Big Thing 🎉',
