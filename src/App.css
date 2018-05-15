@@ -8,11 +8,7 @@ body {
     sans-serif;
 }
 
-body * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;  
-}
+
 
 .root {
     margin: 5% 25%;

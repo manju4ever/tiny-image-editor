@@ -21,11 +21,12 @@ const defaultDropZoneStyle = {
 
 const styles = {
     root: {
-        width: '100%',
-        height: '80px',
-        fontWeight: '200',
+        width: '95%',
+        height: '120px',
+        fontWeight: '300',
         boxSizing: 'border-box',
         border: '2px dotted purple',
+        borderRadius: '10px',
         padding: '10px',
     },
     dropZone: defaultDropZoneStyle,
@@ -35,8 +36,10 @@ const styles = {
 };
 
 const defaultEditorConfig = {
-    accept: "image/jpeg, image/png, image/jpg",
-    maxSize: 4, //4 mb max size
+    accept: "image/jpeg, image/png, image/jpg", // default MIME types
+    maxSize: 4, // in mb
+    maxHeight: 80,
+    maxWidth: 300,
 };
 
 class TinyImageEditor extends Component {
@@ -46,9 +49,11 @@ class TinyImageEditor extends Component {
             ...defaultEditorConfig,
             ...props.config,
         };
+        this.fileReader = null;
         this.state = {
             placeholder: props.placeholder || `Please select or drop an image file`,
-            finalImage: null,
+            finalImageFile: null,
+            finalImagePreview: null,
             dropZone: {
                 error: false,
                 errorText: null,
@@ -64,26 +69,59 @@ class TinyImageEditor extends Component {
 
         this.dzOnDrop = this.dzOnDrop.bind(this);
     }
+    componentDidMount() {
+        this.fileReader = new FileReader();
+        this.fileReader.addEventListener('load', () => {
+            this.setState({
+                finalImagePreview: this.fileReader.result,
+            });
+        });
+    }
+    dzOnDrop(accepted, rejected) {
+        const { maxSize } = this.config;
+        if (rejected.length > 0) {
+            this.setState({
+                error: true,
+                errorText: `This file exceeds ${maxSize}mb or the format is not supported ! Click here to choose another file.`,
+            });
+        }
+        if (rejected.length === 0 && accepted.length) {
+            //Read image as data url
+            this.fileReader.readAsDataURL(accepted[0]);
+            this.setState({
+                finalImageFile: accepted[0],
+            });
+        }
+    }
     showSelectionPreview() {
-        const { error, errorText, placeholder, finalImage } = this.state;
+        const { config } = this;
+        const { label = "Image" } = this.props;
+        const { error, errorText, placeholder, finalImageFile, finalImagePreview } = this.state;
         if (error && errorText) {
             return <p>
                 <ErrorIcon style={{ position: 'relative', top: "5px" }} color={red500} />&nbsp;
                 {errorText}
             </p>
-        } else if (finalImage) {
-            return <h4>
-                Image Preview Goes Here !
-            </h4>
+        } else if (finalImagePreview) {
+            return <div>
+                <p><i>{label} Preview</i></p>
+                <img src={finalImagePreview} height={config.maxHeight} width={config.maxWidth} alt="Preview Not Available" />
+            </div>
         }
-        return <p style={{ cursor: 'pointer' }}>
+        return <p style={{ cursor: 'pointer', position: 'relative' }}>
             {placeholder}
         </p>
     }
+    resetAll() {
+        this.setState({
+            finalImageFile: null,
+            finalImagePreview: null,
+        });
+    }
     showActionButtons() {
-        const { error } = this.state;
+        const { error, finalImagePreview } = this.state;
         if (error) return null;
-        if (this.finalImage) return <div style={{ position: 'absolute', right: 0, top: "3px" }}>
+        if (finalImagePreview) return <div style={{ position: 'absolute', right: 0, top: "-30px" }}>
             <FlatButton onClick={this.displayEditor} style={{ fontSize: 8 }} primary={true} icon={<EditIcon />} />
             <FlatButton onClick={this.resetAll} style={{ fontSize: 8 }} secondary={true} icon={<DeleteIcon />} />
         </div>
@@ -91,19 +129,6 @@ class TinyImageEditor extends Component {
     }
     displayEditor() {
 
-    }
-    resetAll() {
-
-    }
-    dzOnDrop(accepted, rejected) {
-        console.log(accepted, rejected);
-        const { maxSize } = this.config;
-        if (rejected.length > 0) {
-            this.setState({
-                error: true,
-                errorText: `This file exceeds ${maxSize}mb or the format is not supported !`,
-            });
-        }
     }
     render() {
         const { config } = this;

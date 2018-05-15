@@ -6,5 +6,5 @@ import App from "./App";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 ReactDOM.render(<MuiThemeProvider>
-    <TinyImageEditor placeholder="Click here to select or drop  a 200x200 company logo here" />
+    <TinyImageEditor label="Company Logo" placeholder="Click here to select or drop  a 200x200 company logo here" />
 </MuiThemeProvider>, document.getElementById('root'));
