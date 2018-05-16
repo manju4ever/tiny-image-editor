@@ -8,6 +8,7 @@ import DeleteIcon from "material-ui/svg-icons/action/delete";
 import EditIcon from "material-ui/svg-icons/image/edit";
 import FlatButton from "material-ui/FlatButton";
 import PhotoIcon from "material-ui/svg-icons/image/photo";
+import EyeIcon from "material-ui/svg-icons/image/remove-red-eye";
 import Dialog from "material-ui/Dialog";
 
 import "./app.scss";
@@ -24,7 +25,7 @@ const styles = {
     width: "100%",
     height: "120px",
     fontWeight: "300",
-    border: "2px dotted purple",
+    boxShadow: "0px 0px 3px 0px rgba(88, 57, 135, 0.8)",
     borderRadius: "10px",
     padding: "10px"
   },
@@ -56,6 +57,7 @@ class TinyImageEditor extends Component {
       ...props.config
     };
     this.fileReader = null;
+    this.editedImageFile = null;
     this.state = {
       placeholder: props.placeholder || `Please select or drop an image file`,
       finalImageFile: null,
@@ -124,8 +126,24 @@ class TinyImageEditor extends Component {
       );
     } else if (finalImagePreview) {
       return (
-        <div>
-          <h5 style={{ lineHeight: "0.3px" }}>{label} Preview</h5>
+        <div style={{
+          position: "relative",
+          top: "-15px",
+        }}>
+          <p style={{
+            position: 'relative',
+            lineHeight: "-0.3rem",
+            fontSize: 15,
+            fontWeight: 300,
+          }}>
+            <EyeIcon style={{
+              position: 'relative',
+              width: 22,
+              height: 22,
+              top: 5,
+            }} />
+            &nbsp;
+            {label} Preview</p>
           <img
             src={finalImagePreview}
             height={config.maxHeight}
@@ -145,6 +163,7 @@ class TinyImageEditor extends Component {
           fontWeight: 100
         }}
       >
+        <PhotoIcon style={{ width: 40, height: 40, top: 11, position: 'relative' }} />
         Click here or drop an Image {label} of {config.maxWidth}x{
           config.maxHeight
         }{" "}
@@ -191,15 +210,20 @@ class TinyImageEditor extends Component {
     });
   }
   handleEditorSave() {
+    const { editedImageFile } = this.state;
     // Perform final actions after image is cropped
     this.setState({
-      showEditor: false
+      showEditor: false,
+      finalImageFile: this.editedImageFile,
+      finalImagePreview: blobToUrl(this.editedImageFile),
     });
   }
-  onEditComplete() {
-    console.log(`Im being Called !`);
+  onEditComplete(editedImageFile) {
+    this.editedImageFile = editedImageFile;
   }
   getEditorDialog() {
+    const { config } = this;
+    const { filename = 'cropped_image' } = this.props;
     const { showEditor, finalImageFile } = this.state;
     const actions = [
       <FlatButton
@@ -212,7 +236,10 @@ class TinyImageEditor extends Component {
     if (showEditor) {
       return (
         <Dialog
-          title="Edit Image"
+          title={<div>
+            <h4 style={{ margin: 0 }}>Edit Image</h4>
+            <i style={{ fontSize: 14 }}>Click and drag to crop the image</i>
+          </div>}
           actions={actions}
           modal={true}
           contentStyle={styles.editorDialog}
@@ -221,6 +248,9 @@ class TinyImageEditor extends Component {
           <Cropper
             src={blobToUrl(finalImageFile)}
             onEditComplete={this.onEditComplete}
+            maxWidth={config.maxWidth}
+            maxHeight={config.maxHeight}
+            filename={filename}
           />
         </Dialog>
       );

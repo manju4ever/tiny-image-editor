@@ -5,7 +5,7 @@ import ReactCrop, { makeAspectCrop } from "react-image-crop";
 import ErrorIcon from "material-ui/svg-icons/action/highlight-off";
 
 class Cropper extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.cropped_preview = null;
     this.state = {
@@ -14,7 +14,7 @@ class Cropper extends Component {
         x: 5,
         y: 15,
         width: 200,
-        height: 50
+        height: 50,
       },
       finalCropConfig: null
     };
@@ -25,7 +25,7 @@ class Cropper extends Component {
   }
   onImageLoadComplete(imageElement) {
     this.setState({
-      imageElement,
+      rawImageElement: imageElement,
       crop: makeAspectCrop(
         {
           x: 5,
@@ -37,9 +37,14 @@ class Cropper extends Component {
     });
   }
   onCropFinish(crop, pixelCrop) {
-    console.log(pixelCrop);
+    const { onEditComplete } = this.props;
     this.setState({
-      finalCropConfig: pixelCrop
+      finalCropConfig: pixelCrop,
+    });
+    this.getCroppedImage().then(editedImage => {
+      onEditComplete(editedImage);
+    }).catch(err => {
+      console.error(`[TIM] Something went wrong on saving crooped image.`);
     });
   }
   handleCrop(crop) {
@@ -48,9 +53,9 @@ class Cropper extends Component {
     });
   }
   getCroppedImage() {
+    const { filename = 'cropped_image' } = this.props;
     const { rawImageElement } = this.state;
     const { x, y, width, height } = this.state.finalCropConfig;
-    console.log(x, y, width, height);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "white";
@@ -58,20 +63,13 @@ class Cropper extends Component {
     ctx.drawImage(rawImageElement, x, y, width, height, 0, 0, 300, 300);
     return new Promise((resolve, reject) => {
       canvas.toBlob(file => {
-        file.name = fileName;
+        file.name = filename;
         resolve(file);
-        //Set the final cropped image
-        const image_preview = document.createElement("IMG");
-        image_preview.setAttribute("src", URL.createObjectURL(file));
-        image_preview.setAttribute("height", height);
-        image_preview.setAttribute("width", width);
-        image_preview.setAttribute("alt", "Image Preview");
-        this.cropped_preview.appendChild(image_preview);
       }, "image/jpeg");
     });
   }
   render() {
-    const { src = null, onEditComplete } = this.props;
+    const { src = null, maxHeight = 768, maxWidth = 1334 } = this.props;
     const { crop } = this.state;
     return (
       <div
@@ -80,7 +78,6 @@ class Cropper extends Component {
           width: "100%",
           height: 300,
           margin: "0 auto",
-          border: "2px dotted grey"
         }}
       >
         {src ? (
@@ -92,17 +89,21 @@ class Cropper extends Component {
             style={{
               height: "100%",
               width: 600,
+              backgroundSize: "40px 40px",
+              top: "2px",
+              overflow: "auto",
+              boxShadow: "0px 0px 1px 1px rgba(0,0,0,0.2)",
+              borderRadius: '5px',
               background: "white",
-              overflow: "auto"
             }}
             crop={crop}
             crossorigin="*"
           />
         ) : (
-          <h4>
-            <ErrorIcon />Unable to find an image source !
+            <h4>
+              <ErrorIcon />Unable to find an image source !
           </h4>
-        )}
+          )}
         <div ref={ele => (this.cropped_preview = ele)} />
       </div>
     );

@@ -34,7 +34,7 @@ class ImageCropper extends Component {
             this.setImageData(this.reader.result);
         }
         this.reader.onerror = () => {
-            console.error(`Something Went Wrong`);
+            console.error(`[TIM] Something went wrong while reading image`);
         }
     }
     handleFileDrop(files) {
@@ -52,7 +52,6 @@ class ImageCropper extends Component {
         });
     }
     onCropFinish(crop, pixelCrop) {
-        console.log(pixelCrop);
         this.setState({
             finalCropConfig: pixelCrop,
         });
@@ -79,7 +78,6 @@ class ImageCropper extends Component {
     getCroppedImage(image, fileName = 'cropped_image') {
         const { rawImageElement } = this.state;
         const { x, y, width, height } = this.state.finalCropConfig;
-        console.log(x, y, width, height);
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = "white";
