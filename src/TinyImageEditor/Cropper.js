@@ -57,9 +57,11 @@ class Cropper extends Component {
     const { rawImageElement } = this.state;
     const { x, y, width, height } = this.state.finalCropConfig;
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.strokeStyle = "white";
-    ctx.fillStyle = "white";
+    const ctx = canvas.getContext("2d", { alpha: false });
+    // Fill Style Defaults to White Can be any other colors
+    ctx.fillStyle = "#FFFFFF";
+    // Very important ! - Fill the chosen area with an opaque background
+    ctx.fillRect(0, 0, width, height);
     ctx.fill();
     ctx.drawImage(rawImageElement, x, y, width, height, 0, 0, 300, 300);
     return new Promise((resolve, reject) => {
