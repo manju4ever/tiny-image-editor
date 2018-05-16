@@ -25,7 +25,7 @@ const styles = {
     width: "100%",
     height: "120px",
     fontWeight: "300",
-    boxShadow: "0px 0px 3px 0px rgba(88, 57, 135, 0.8)",
+    boxShadow: "0px 0px 8px 0px rgba(88, 57, 135, 0.8)",
     borderRadius: "10px",
     padding: "10px"
   },
@@ -100,7 +100,9 @@ class TinyImageEditor extends Component {
       //Read image as data url
       this.fileReader.readAsDataURL(accepted[0]);
       this.setState({
-        finalImageFile: accepted[0]
+        finalImageFile: accepted[0],
+        error: false,
+        errorText: '',
       });
     }
   }
@@ -116,7 +118,11 @@ class TinyImageEditor extends Component {
     } = this.state;
     if (error && errorText) {
       return (
-        <p>
+        <p style={{
+          position: 'relative',
+          top: 20,
+          cursor: 'pointer',
+        }}>
           <ErrorIcon
             style={{ position: "relative", top: "5px" }}
             color={red500}
@@ -154,20 +160,12 @@ class TinyImageEditor extends Component {
       );
     }
     return (
-      <p
-        style={{
-          cursor: "pointer",
-          position: "relative",
-          top: "20px",
-          fontSize: 17,
-          fontWeight: 100
-        }}
-      >
+      <p>
         <PhotoIcon style={{ width: 40, height: 40, top: 11, position: 'relative' }} />
-        Click here or drop an Image {label} of {config.maxWidth}x{
+        Click here or drop {label} image of {config.maxWidth}x{
           config.maxHeight
         }{" "}
-        of size upto {config.maxSize}MB.
+        and of size upto {config.maxSize}MB.
       </p>
     );
   }

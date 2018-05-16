@@ -58,6 +58,7 @@ class Cropper extends Component {
     const { x, y, width, height } = this.state.finalCropConfig;
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
+    ctx.strokeStyle = "white";
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.drawImage(rawImageElement, x, y, width, height, 0, 0, 300, 300);
