@@ -25,7 +25,15 @@ class Cropper extends Component {
   }
   onImageLoadComplete(imageElement) {
     this.setState({
-      rawImageElement: imageElement
+      rawImageElement: imageElement,
+      crop: makeAspectCrop(
+        {
+          x: 5,
+          y: 15,
+          aspect: 16 / 9
+        },
+        imageElement.width / imageElement.height
+      )
     });
   }
   onCropFinish(crop, pixelCrop) {
@@ -99,10 +107,10 @@ class Cropper extends Component {
             maxWidth={maxWidth}
           />
         ) : (
-          <h4>
-            <ErrorIcon />Unable to find an image source !
+            <h4>
+              <ErrorIcon />Unable to find an image source !
           </h4>
-        )}
+          )}
         <div ref={ele => (this.cropped_preview = ele)} />
       </div>
     );

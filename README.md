@@ -1,5 +1,5 @@
-## React Webpack Starter
-### For those who want to have full control over the webpack configuration and feel awesome.
+## Tiny Image Editor
+### A react component which utlizes react-dropzone, react-image-crop and react-dropzone
 
 * Do `npm install --global npx` as the npm scripts needs them.
 

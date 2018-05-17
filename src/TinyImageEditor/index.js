@@ -11,7 +11,6 @@ import PhotoIcon from "material-ui/svg-icons/image/photo";
 import EyeIcon from "material-ui/svg-icons/image/remove-red-eye";
 import Dialog from "material-ui/Dialog";
 
-import "./app.scss";
 import Cropper from "./Cropper";
 
 const defaultDropZoneStyle = {
