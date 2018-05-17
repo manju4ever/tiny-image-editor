@@ -1,5 +1,5 @@
 ## Tiny Image Editor
-### A react component which utlizes react-dropzone, react-image-crop and react-dropzone
+### A react component which utlizes react-dropzone, react-image-crop and material-ui
 
 * Do `npm install --global npx` as the npm scripts needs them.
 
