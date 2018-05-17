@@ -8,3 +8,6 @@
 
 ### Build
 * `npm run build`
+
+### Feel free to
+[![Edit react-webpack-stater](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/manju4ever/tiny-image-editor/tree/master/)
