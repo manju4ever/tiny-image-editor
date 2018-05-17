@@ -11,10 +11,10 @@ class Cropper extends Component {
     this.state = {
       rawImageElement: null,
       crop: {
-        x: 5,
-        y: 15,
-        width: 200,
-        height: 50,
+        x: 10,
+        y: 20,
+        width: props.maxWidth || 1366,
+        height: props.maxHeight || 768
       },
       finalCropConfig: null
     };
@@ -25,27 +25,21 @@ class Cropper extends Component {
   }
   onImageLoadComplete(imageElement) {
     this.setState({
-      rawImageElement: imageElement,
-      crop: makeAspectCrop(
-        {
-          x: 5,
-          y: 15,
-          aspect: 16 / 9
-        },
-        imageElement.width / imageElement.height
-      )
+      rawImageElement: imageElement
     });
   }
   onCropFinish(crop, pixelCrop) {
     const { onEditComplete } = this.props;
     this.setState({
-      finalCropConfig: pixelCrop,
+      finalCropConfig: pixelCrop
     });
-    this.getCroppedImage().then(editedImage => {
-      onEditComplete(editedImage);
-    }).catch(err => {
-      console.error(`[TIM] Something went wrong on saving crooped image.`);
-    });
+    this.getCroppedImage()
+      .then(editedImage => {
+        onEditComplete(editedImage);
+      })
+      .catch(err => {
+        console.error(`[TIM] Something went wrong on saving crooped image.`);
+      });
   }
   handleCrop(crop) {
     this.setState({
@@ -53,7 +47,7 @@ class Cropper extends Component {
     });
   }
   getCroppedImage() {
-    const { filename = 'cropped_image' } = this.props;
+    const { filename = "cropped_image" } = this.props;
     const { rawImageElement } = this.state;
     const { x, y, width, height } = this.state.finalCropConfig;
     const canvas = document.createElement("canvas");
@@ -80,7 +74,7 @@ class Cropper extends Component {
           textAlign: "center",
           width: "100%",
           height: 300,
-          margin: "0 auto",
+          margin: "0 auto"
         }}
       >
         {src ? (
@@ -96,17 +90,19 @@ class Cropper extends Component {
               top: "2px",
               overflow: "auto",
               boxShadow: "0px 0px 1px 1px rgba(0,0,0,0.2)",
-              borderRadius: '5px',
-              background: "white",
+              borderRadius: "5px",
+              background: "white"
             }}
             crop={crop}
             crossorigin="*"
+            maxHeight={maxHeight}
+            maxWidth={maxWidth}
           />
         ) : (
-            <h4>
-              <ErrorIcon />Unable to find an image source !
+          <h4>
+            <ErrorIcon />Unable to find an image source !
           </h4>
-          )}
+        )}
         <div ref={ele => (this.cropped_preview = ele)} />
       </div>
     );

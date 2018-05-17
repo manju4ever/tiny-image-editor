@@ -90,6 +90,7 @@ class TinyImageEditor extends Component {
   }
   dzOnDrop(accepted, rejected) {
     const { maxSize } = this.config;
+    const { onFinishEdit } = this.props;
     if (rejected.length > 0) {
       this.setState({
         error: true,
@@ -97,12 +98,15 @@ class TinyImageEditor extends Component {
       });
     }
     if (rejected.length === 0 && accepted.length) {
+      //Call onFinishEdit from parent
+      onFinishEdit(accepted[0]);
+
       //Read image as data url
       this.fileReader.readAsDataURL(accepted[0]);
       this.setState({
         finalImageFile: accepted[0],
         error: false,
-        errorText: '',
+        errorText: ""
       });
     }
   }
@@ -118,11 +122,13 @@ class TinyImageEditor extends Component {
     } = this.state;
     if (error && errorText) {
       return (
-        <p style={{
-          position: 'relative',
-          top: 20,
-          cursor: 'pointer',
-        }}>
+        <p
+          style={{
+            position: "relative",
+            top: 20,
+            cursor: "pointer"
+          }}
+        >
           <ErrorIcon
             style={{ position: "relative", top: "5px" }}
             color={red500}
@@ -132,24 +138,31 @@ class TinyImageEditor extends Component {
       );
     } else if (finalImagePreview) {
       return (
-        <div style={{
-          position: "relative",
-          top: "-15px",
-        }}>
-          <p style={{
-            position: 'relative',
-            lineHeight: "-0.3rem",
-            fontSize: 15,
-            fontWeight: 300,
-          }}>
-            <EyeIcon style={{
-              position: 'relative',
-              width: 22,
-              height: 22,
-              top: 5,
-            }} />
+        <div
+          style={{
+            position: "relative",
+            top: "-15px"
+          }}
+        >
+          <p
+            style={{
+              position: "relative",
+              lineHeight: "-0.3rem",
+              fontSize: 15,
+              fontWeight: 300
+            }}
+          >
+            <EyeIcon
+              style={{
+                position: "relative",
+                width: 22,
+                height: 22,
+                top: 5
+              }}
+            />
             &nbsp;
-            {label} Preview</p>
+            {label} Preview
+          </p>
           <img
             src={finalImagePreview}
             height={config.maxHeight}
@@ -160,9 +173,15 @@ class TinyImageEditor extends Component {
       );
     }
     return (
-      <p>
-        <PhotoIcon style={{ width: 40, height: 40, top: 11, position: 'relative' }} />
-        Click here or drop {label} image of {config.maxWidth}x{
+      <p
+        style={{
+          cursor: "pointer"
+        }}
+      >
+        <PhotoIcon
+          style={{ width: 40, height: 40, top: 11, position: "relative" }}
+        />
+        Click here to select {label} image of {config.maxWidth}x{
           config.maxHeight
         }{" "}
         and of size upto {config.maxSize}MB.
@@ -213,7 +232,7 @@ class TinyImageEditor extends Component {
     this.setState({
       showEditor: false,
       finalImageFile: this.editedImageFile,
-      finalImagePreview: blobToUrl(this.editedImageFile),
+      finalImagePreview: blobToUrl(this.editedImageFile)
     });
   }
   onEditComplete(editedImageFile) {
@@ -221,7 +240,7 @@ class TinyImageEditor extends Component {
   }
   getEditorDialog() {
     const { config } = this;
-    const { filename = 'cropped_image' } = this.props;
+    const { filename = "cropped_image" } = this.props;
     const { showEditor, finalImageFile } = this.state;
     const actions = [
       <FlatButton
@@ -234,10 +253,12 @@ class TinyImageEditor extends Component {
     if (showEditor) {
       return (
         <Dialog
-          title={<div>
-            <h4 style={{ margin: 0 }}>Edit Image</h4>
-            <i style={{ fontSize: 14 }}>Click and drag to crop the image</i>
-          </div>}
+          title={
+            <div>
+              <h4 style={{ margin: 0 }}>Edit Image</h4>
+              <i style={{ fontSize: 14 }}>Click and drag to crop the image</i>
+            </div>
+          }
           actions={actions}
           modal={true}
           contentStyle={styles.editorDialog}
@@ -260,7 +281,16 @@ class TinyImageEditor extends Component {
     const { error, errorText } = this.state;
 
     return (
-      <div style={styles.root}>
+      <div
+        style={{
+          width: "100%",
+          height: "120px",
+          fontWeight: "300",
+          boxShadow: "0px 0px 8px 0px rgba(88, 57, 135, 0.8)",
+          borderRadius: "10px",
+          padding: "10px"
+        }}
+      >
         <DropZone
           accept={config.accept}
           style={error ? styles.dropZoneError : styles.dropZone}
@@ -277,5 +307,12 @@ class TinyImageEditor extends Component {
     );
   }
 }
+
+TinyImageEditor.propTypes = {
+  label: PropTypes.string,
+  maxHeight: PropTypes.number,
+  maxWidth: PropTypes.number,
+  onFinishEdit: PropTypes.func.isRequired
+};
 
 export default TinyImageEditor;
