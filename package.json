@@ -1,7 +1,7 @@
 {
-  "name": "react-webpack-stater",
+  "name": "tiny-image-editor",
   "version": "1.0.0",
-  "description": "",
+  "description": "A react based tiny image editor for material-ui",
   "main": "index.js",
   "scripts": {
     "watch": "npx webpack-dev-server --progress --hot",
