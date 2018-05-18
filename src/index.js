@@ -19,6 +19,7 @@ ReactDOM.render(
           maxHeight: 80,
           maxSize: 4
         }}
+        style={{ width: "100%" }}
         onFinishEdit={onFinishEdit}
       />
     </div>

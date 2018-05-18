@@ -30,7 +30,8 @@ const styles = {
   },
   dropZone: defaultDropZoneStyle,
   dropZoneError: {
-    ...defaultDropZoneStyle
+    ...defaultDropZoneStyle,
+    boxShadow: "0px 0px 8px 0px rgba(255,0, 0, 0.8)"
   },
   editorDialog: {
     width: 600
@@ -180,10 +181,18 @@ class TinyImageEditor extends Component {
         <PhotoIcon
           style={{ width: 40, height: 40, top: 11, position: "relative" }}
         />
-        Click here to select {label} image of {config.maxWidth}x{
-          config.maxHeight
-        }{" "}
-        and of size upto {config.maxSize}MB.
+        Click here to select {label} image. Max Size:{config.maxSize}MB.
+        <br />
+        <span
+          style={{
+            fontFamily: "system-ui, sans-serif",
+            fontweight: "100 !important",
+            fontStyle: "italic",
+            fontSize: "15px !important"
+          }}
+        >
+          Recommended Size: {config.maxWidth}x{config.maxHeight}
+        </span>
       </p>
     );
   }
@@ -277,8 +286,11 @@ class TinyImageEditor extends Component {
   }
   render() {
     const { config } = this;
+    const { style: userStyle = {} } = this.props;
     const { error, errorText } = this.state;
-
+    const dropZoneStyle = error
+      ? { ...styles.dropZone, ...styles.dropZoneError }
+      : styles.dropZone;
     return (
       <div
         style={{
@@ -287,12 +299,13 @@ class TinyImageEditor extends Component {
           fontWeight: "300",
           boxShadow: "0px 0px 8px 0px rgba(88, 57, 135, 0.8)",
           borderRadius: "10px",
-          padding: "10px"
+          padding: "10px",
+          ...userStyle
         }}
       >
         <DropZone
           accept={config.accept}
-          style={error ? styles.dropZoneError : styles.dropZone}
+          style={dropZoneStyle}
           onDrop={this.dzOnDrop}
           maxSize={config.maxSize * 1024 * 1024}
         >
