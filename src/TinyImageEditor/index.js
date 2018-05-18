@@ -183,7 +183,8 @@ class TinyImageEditor extends Component {
         <PhotoIcon
           style={{ width: 40, height: 40, top: 11, position: "relative" }}
         />
-        Click here to select {label} image. Max Size:{config.maxSize}MB.
+        Click here to select {label} image. Maximum File Size: {config.maxSize}{" "}
+        MB
         <br />
         <span
           style={{
