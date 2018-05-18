@@ -19,18 +19,20 @@ const defaultDropZoneStyle = {
   textAlign: "center"
 };
 
+const defaultRootStyle = {
+  width: "100%",
+  height: "120px",
+  fontWeight: "300",
+  boxShadow: "0px 0px 8px 0px rgba(88, 57, 135, 0.8)",
+  borderRadius: "10px",
+  padding: "10px"
+};
+
 const styles = {
-  root: {
-    width: "100%",
-    height: "120px",
-    fontWeight: "300",
-    boxShadow: "0px 0px 8px 0px rgba(88, 57, 135, 0.8)",
-    borderRadius: "10px",
-    padding: "10px"
-  },
+  root: defaultRootStyle,
   dropZone: defaultDropZoneStyle,
   dropZoneError: {
-    ...defaultDropZoneStyle,
+    ...defaultRootStyle,
     boxShadow: "0px 0px 8px 0px rgba(255,0, 0, 0.8)"
   },
   editorDialog: {
@@ -125,8 +127,8 @@ class TinyImageEditor extends Component {
         <p
           style={{
             position: "relative",
-            top: 20,
-            cursor: "pointer"
+            cursor: "pointer",
+            top: "15px"
           }}
         >
           <ErrorIcon
@@ -288,24 +290,14 @@ class TinyImageEditor extends Component {
     const { config } = this;
     const { style: userStyle = {} } = this.props;
     const { error, errorText } = this.state;
-    const dropZoneStyle = error
-      ? { ...styles.dropZone, ...styles.dropZoneError }
-      : styles.dropZone;
+    const rootStyle = error
+      ? { ...styles.dropZoneError, ...userStyle }
+      : { ...defaultRootStyle, ...userStyle };
     return (
-      <div
-        style={{
-          width: "100%",
-          height: "120px",
-          fontWeight: "300",
-          boxShadow: "0px 0px 8px 0px rgba(88, 57, 135, 0.8)",
-          borderRadius: "10px",
-          padding: "10px",
-          ...userStyle
-        }}
-      >
+      <div style={rootStyle}>
         <DropZone
           accept={config.accept}
-          style={dropZoneStyle}
+          style={styles.dropZone}
           onDrop={this.dzOnDrop}
           maxSize={config.maxSize * 1024 * 1024}
         >
